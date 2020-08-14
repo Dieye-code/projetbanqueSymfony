@@ -1,0 +1,118 @@
+{% include "web/header.html" %}
+
+<div class="main">
+    <div class="panel-primary">
+        <div class="panel-heading">
+            Ajout d'un Compte Client
+        </div>
+        <div class="panel-body">
+            <form action="Compte" method="post" id="myForm" novalidate>
+                <div class="infoCompte">
+                    <div class="title">Info Compte</div>
+                    <div class="form-group">
+                        <label for="solde" class="control-label">Clés RIB</label>
+                        <input type="text" class="form-control" name="clesRib" id="clesRib">
+                    </div>
+                    <div class="form-group">
+                        <label for="typeCompte" class="control-label">Type de Compte</label>
+                        <select name="typeCompte" id="typeCompte" class="form-control">
+                            <option value="0">--Type de Compte</option>
+                            {% for typeCompte in typeComptes %}
+                                <option value="{{ typeCompte.id }}">{{ typeCompte.libelle }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group" id="dateDeblocage">
+                        <label for="solde" class="control-label">Date Déblocage</label>
+                        <input type="date" class="form-control" name="dateDebc" id="dateDebc">
+                    </div>
+                    <div class="form-group">
+                        <label for="solde" class="control-label">Solde</label>
+                        <input type="number" class="form-control" name="solde" id="solde" value="0">
+                        <span class="alert-danger" id="solde-invalid">Le solde doit etre superieur à
+                            {{ fraisOuverture.montant }}</span>
+                        <span class="alert-danger" id="fraisBlocage-invalid">Le solde doit etre superieur à
+                            {{ fraisBlocageOuverture.montant }}</span>
+                        <span class="alert-danger" id="agios-invalid">Le solde doit etre superieur à
+                            {{ agiosOuverture.montant }}</span>
+                    </div>
+                    <div class="form-group" id="fraisBancaire">
+                        <label for="frais" class="control-label">Frais Bancaire</label>
+                        <span>{{ fraisOuverture.montant }}</span>
+                        <input type="hidden" class="form-control" name="frais" id="frais" value="{{ fraisOuverture.montant }}">
+                    </div>
+                    <div class="form-group" id="agiosCompte">
+                        <label for="agios" class="control-label">Agios</label>
+                        <span>{{ agiosOuverture.montant }}</span>
+                        <input type="hidden" class="form-control" name="agios" id="agios" value="{{ agiosOuverture.montant }}">
+                    </div>
+                    <div class="form-group" id="bloqueCompte">
+                        <label for="fraisBlocageCompte" class="control-label">Frais Blocage</label>
+                        <span>{{ fraisBlocageOuverture.montant }}</span>
+                        <input type="hidden" class="form-control" name="fraisBlocageCompte" id="fraisBlocageCompte" value="{{ fraisBlocageOuverture.montant }}">
+                    </div>
+                    <div class="form-group" id="typeClientSelect">
+                        <label for="typeClient" class="control-label">Type Client</label>
+                        <select name="typeClient" id="typeClient" class="form-control">
+                            <option value="0">--Type Client--</option>
+                            <option value="1">Client Physique</option>
+                            <option value="2">Client Moral</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="typeClientPhysiqueSelect">
+                        <label for="typeClientPhysique" class="control-label">Type Client
+                            Physique</label>
+                        <select name="typeClientPhysique" id="typeClientPhysique" class="form-control">
+                            <option value="1">Non Salarié</option>
+                            <option value="2">Salarié</option>
+                        </select>
+                    </div>
+                    <div class="infoClientPhysique" id="infoClientPhysique">
+                        <div class="form-group">
+                            <label for="solde" class="control-label">Client Non Salarié</label>
+                            <select name="idClientNormal" id="idClientNormal" class="form-control">
+                                <option value="0">--Client--</option>
+                                {% for clientP in clientPhysiquesimple %}
+                                    <option value="{{ clientP.id }}">{{ clientP.prenom }} {{ clientP.nom }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="infoClientPhysiqueSalarie" id="infoClientPhysiqueSalarie">
+                        <div class="form-group">
+                            <label for="solde" class="control-label">Client Salarié</label>
+                            <select name="idClientSalarie" id="idClientSalarie" class="form-control">
+                                <option value="0">--Client--</option>j
+
+                                {% for clientP in clientPhysiquesalarie %}
+                                    <option value="{{ clientP.id }}">{{ clientP.prenom }} {{ clientP.nom }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="infoClientEntreprise" id="infoClientEntreprise">
+                        <div class="form-group">
+                            <label for="solde" class="control-label">Client</label>
+                            <select name="idEmployeur" id="idEmployeur" class="form-control">
+                                <option value="0">--Entreprise--</option>
+                                {% for clientMoral in clientMorals %}
+                                    <option value="{{ clientMoral.id }}">{{ clientMoral.nom }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="submit" class="btn-primary" name="ajouter" value="Ajouter">
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{{ asset('js/compte.js')}}"></script>
+
+{% include "web/footer.html" %}
