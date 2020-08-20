@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			Banque du Peuple
+		</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/notyf.min.css">
+	</head>
+	<body>
+
+		{% if ok is defined and ok == 0 %}
+			<script src="js/notyf.min.js"></script>
+			<script>
+				var t = new Notyf({
+                duration: 2000,
+                position: {
+                x: 'right',
+                y: 'top'
+                }
+                });
+                t.error("Echec d'ajout du Client");
+			</script>
+
+		{% endif %}
+
+		<div class="card col-md-6 offset-md-3    mt-5">
+			<div class="card-header text-white bg-primary">Ajout d'un Client</div>
+			<div class="card-body">
+				{{ form_start(form)}}
+				<div class="form-group">
+					{{form_row(form.nom)}}
+				</div>
+				<div class="form-group">
+					{{form_row(form.prenom)}}
+				</div>
+				<div class="form-group">
+					{{form_row(form.dateNaissance)}}
+				</div>
+				<div class="form-group">
+					{{form_row(form.lieuNaissance)}}
+				</div>
+				<div class="form-group">
+					{{form_row(form.adresse)}}
+				</div>
+				<div class="form-group">
+					{{form_row(form.telephone)}}
+				</div>
+				<div class="form-group">
+					{{form_row(form.email)}}
+				</div>
+				{{ form_end(form)}}
+			</div>
+		</div>
+		<script>
+			document.getElementById('client_dateNaissance').setAttribute('type', 'date');
+		</script>
+	</body>
+</html>

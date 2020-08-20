@@ -2,16 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\ClientMoral;
-use App\Entity\ClientPhysique;
 use App\Entity\Compte;
-use App\Entity\TypeCompte;
-use App\Entity\TypeFrais;
-use App\Repository\ClientPhysiqueRepository;
-use App\Repository\CompteRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Form\CompteType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Validator\Constraints\Form;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -20,56 +15,39 @@ class CompteController extends AbstractController
     /**
      * @Route("/Compte", name="compte")
      */
-    public function index(ManagerRegistry $em)
+    public function index(Request $request)
     {
-        $compteDb = new ClientPhysiqueRepository($em,ClientPhysique::class);
 
-        if(isset($_POST['ajouter'])){
-    extract($_POST);
-
-            if ($typeCompte == '1') {
-                $solde = $solde - $frais;
-            } else {
-                if ($typeCompte == '4') {
-
-                    $solde = $solde - $fraisBlocageCompte;
+        $compte = new Compte();
+        $form = $this->createForm(CompteType::class, $compte);
+        if ($request->isMethod('POST')) {
+            if ($form->handleRequest($request)->isValid()) {
+                $db = $this->getDoctrine()->getManager();
+                $db->persist($compte);
+                $db->flush();
+                $a = $compte->getId();
+                // var_dump($a);
+                // die;
+                if ($a != null) {
+                    $data['ok'] = 1;
+                    $data['comptes'] = $db->getRepository(Compte::class)->findAll();
+                    return $this->render("compte/liste.html.twig", $data);
+                } else {
+                    $data['ok'] = 0;
+                    $data['form'] = $form->createView();
+                    return $this->render("compte/index.html.twig",$data);
                 }
-            }
-            $idClientphysique = NULL;
-            if ($idClientNormal != '0' || $idClientSalarie != '0') {
-                $idClientphysique = $idClientNormal != '0' ? (int) $idClientNormal : (int) $idClientSalarie;
-            }
-            $compte = new Compte();
-            $compte->setClerib($clesRib);
-            $compte->setNumero($clesRib);
-            $compte->setSolde($solde);
-            $compte->setClientPhysique($this->getDoctrine()->getRepository(ClientPhysique::class)->find($idClientphysique));
-            $compte->setClientMoral($this->getDoctrine()->getRepository(ClientMoral::class)->find($idEmployeur));
-            $compte->setTypeCompte($this->getDoctrine()->getRepository(TypeCompte::class)->find($typeCompte));
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($compte);
-            $em->flush();
-            if($compte->getId()!= null){
-                echo "Compte bien ajoute";
-
             } else {
-                echo  "Echec d'ajout du Compte";
+                $data['vide'] = 1;
+                $data['form'] = $form->createView();
+                $this->render("compte/index.html.twig", $data);
             }
-            return  new Response();
         } else {
-            $data['clientMorals'] = $this->getDoctrine()->getRepository(ClientMoral::class)->findAll();
-            $data['typeComptes'] = $this->getDoctrine()->getRepository(TypeCompte::class)->findAll();
-            $data['typeFrais'] = $this->getDoctrine()->getRepository(TypeFrais::class)->findAll();
-            $data['clientPhysiques'] = $this->getDoctrine()->getRepository(ClientPhysique::class)->findAll();
-            $data['clientPhysiquesalarie'] = $compteDb->getClientSalarie();
-            $data['clientPhysiquesimple'] = $compteDb->getClientNonSalarie();
-            $data['agiosOuverture'] = $this->getDoctrine()->getRepository(TypeFrais::class)->findOneBy(['libelle'=>'Agios']);
-            $data['fraisOuverture'] = $this->getDoctrine()->getRepository(TypeFrais::class)->findOneBy(['libelle'=>'Frais Ouverture']);
-            $data['fraisBlocageOuverture'] = $this->getDoctrine()->getRepository(TypeFrais::class)->findOneBy(['libelle'=>'Frais Blocage']);
-//            var_dump($data['fraisOuverture']);
-//            die;
-                return $this->render('compte/index.html.twig', $data);
 
+            return $this->render('compte/index.html.twig', [
+                'controller_name' => 'CompteController',
+                "form" => $form->createView()
+            ]);
         }
     }
 }

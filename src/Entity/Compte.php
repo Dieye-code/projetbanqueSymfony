@@ -20,49 +20,26 @@ class Compte
     /**
      * @ORM\Column(type="string", length=30)
      */
-    private $clerib;
-
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
     private $numero;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=12)
+     */
+    private $dateCreate;
+
+    /**
+     * @ORM\Column(type="integer", options={"unsigned":true, "default":0})
      */
     private $solde;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ClientPhysique::class)
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="comptes")
      */
-    private $clientPhysique;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=ClientMoral::class, inversedBy="comptes")
-     */
-    private $clientMoral;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=TypeCompte::class, inversedBy="comptes")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $typeCompte;
+    private $client;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getClerib(): ?string
-    {
-        return $this->clerib;
-    }
-
-    public function setClerib(string $clerib): self
-    {
-        $this->clerib = $clerib;
-
-        return $this;
     }
 
     public function getNumero(): ?string
@@ -73,6 +50,18 @@ class Compte
     public function setNumero(string $numero): self
     {
         $this->numero = $numero;
+
+        return $this;
+    }
+
+    public function getDateCreate(): ?string
+    {
+        return $this->dateCreate;
+    }
+
+    public function setDateCreate(string $dateCreate): self
+    {
+        $this->dateCreate = $dateCreate;
 
         return $this;
     }
@@ -89,39 +78,20 @@ class Compte
         return $this;
     }
 
-    public function getClientPhysique(): ?ClientPhysique
+    public function getClient(): ?Client
     {
-        return $this->clientPhysique;
+        return $this->client;
     }
 
-    public function setClientPhysique(?ClientPhysique $clientPhysique): self
+    public function setClient(?Client $client): self
     {
-        $this->clientPhysique = $clientPhysique;
+        $this->client = $client;
 
         return $this;
     }
 
-    public function getClientMoral(): ?ClientPhysique
+    public function __toString()
     {
-        return $this->clientMoral;
-    }
-
-    public function setClientMoral(?ClientPhysique $clientMoral): self
-    {
-        $this->clientMoral = $clientMoral;
-
-        return $this;
-    }
-
-    public function getTypeCompte(): ?TypeCompte
-    {
-        return $this->typeCompte;
-    }
-
-    public function setTypeCompte(?TypeCompte $typeCompte): self
-    {
-        $this->typeCompte = $typeCompte;
-
-        return $this;
+        return $this->numero;
     }
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			Liste des Clients
+		</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/notyf.min.css">
+	</head>
+	<body>
+
+		{% if ok is defined and ok == 1 %}
+			<script src="js/notyf.min.js"></script>
+			<script>
+				var t = new Notyf({
+                duration: 2000,
+                position: {
+                x: 'right',
+                y: 'top'
+                }
+                });
+                t.success("Client bien Ajoute");
+			</script>
+
+		{% endif %}
+
+		<div class="card col-md-10 offset-md-1    mt-5">
+			<div class="card-header text-white bg-primary">Liste des Clients</div>
+			<div class="card-body">
+				<table class="table table-bordered table-striped">
+                    <tr>
+                        <th>Id</th>
+                        <th>Prenom</th>
+                        <th>Date de Naissance</th>
+                        <th>Lieu de Naissance</th>
+                        <th>Telephone</th>
+                        <th>Adresse</th>
+                        <th>Email</th>
+                    </tr>
+                    {% for client in clients %}
+                        <tr>
+                            <td> {{ client.id }} </td>
+                            <td> {{ client.prenom }} </td>
+                            <td> {{ client.dateNaissance }} </td>
+                            <td> {{ client.lieuNaissance }} </td>
+                            <td> {{ client.telephone }} </td>
+                            <td> {{ client.adresse }} </td>
+                            <td> {{ client.email }} </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+			</div>
+		</div>
+	</body>
+</html>
